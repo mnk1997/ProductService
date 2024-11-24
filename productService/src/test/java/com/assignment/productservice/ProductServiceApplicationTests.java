@@ -67,4 +67,19 @@ class ProductServiceApplicationTests {
 
     }
 
+    @Test
+    void deleteByIdShouldBeCalledOnce() throws ProductNotFoundException {
+        //ARRANGE
+        Product product = new Product();
+        product.setId(1L);
+        Mockito.doNothing().when(productService).deleteById(1L);
+
+        //ACT
+        productController.deleteProduct(product);
+
+        //ASSERT
+        Mockito.verify(productService, Mockito.times(1)).deleteById(1L);
+
+    }
+
 }
