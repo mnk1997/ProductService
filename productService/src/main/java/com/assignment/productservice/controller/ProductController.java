@@ -42,9 +42,15 @@ public class ProductController {
         return ResponseEntity.status(HttpStatus.CREATED).body(productService.save(product));
     }
     @DeleteMapping
-    public ResponseEntity<Product> deleteProduct(@RequestBody Product product) throws InstanceNotFoundException {
+    public ResponseEntity<Boolean> deleteProduct(@RequestBody Product product) throws InstanceNotFoundException {
 
-            return ResponseEntity.status(HttpStatus.OK).body(productService.deleteById(product.getId()));
+
+        try {
+            productService.deleteById(product.getId());
+            return ResponseEntity.status(HttpStatus.OK).body(true);
+        }catch (InstanceNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(false);
+        }
     }
 
     @PatchMapping

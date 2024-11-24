@@ -54,14 +54,14 @@ public class FakeStoreProductService implements IProductService {
     }
 
     @Override
-    public Product deleteById(Long id) throws InstanceNotFoundException {
+    public void deleteById(Long id) throws InstanceNotFoundException {
 
         Product product =  findById(id);
         if(id<=0 || product==null)
             throw new InstanceNotFoundException("No product found for given id");
 
         restTemplte.delete("https://fakestoreapi.com/products/" + id, FakeStoreProductDto.class);
-        return product;
+
     }
 
     @Override
