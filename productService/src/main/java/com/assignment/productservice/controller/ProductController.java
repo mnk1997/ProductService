@@ -1,5 +1,6 @@
 package com.assignment.productservice.controller;
 
+import com.assignment.productservice.exception.ProductNotFoundException;
 import com.assignment.productservice.models.Product;
 import com.assignment.productservice.service.IProductService;
 import org.apache.coyote.Response;
@@ -24,7 +25,7 @@ public class ProductController {
 
     @GetMapping
     @RequestMapping("/{id}")
-    public ResponseEntity<Product> getProductById(@PathVariable("id") Long id) throws InstanceNotFoundException {
+    public ResponseEntity<Product> getProductById(@PathVariable("id") Long id) throws ProductNotFoundException {
        return  ResponseEntity.status(HttpStatus.OK).body( productService.findById(id));
     }
 
@@ -34,27 +35,27 @@ public class ProductController {
     }
 
     @PutMapping
-    public ResponseEntity<Product> updateProduct(@RequestBody Product product) throws InstanceNotFoundException {
+    public ResponseEntity<Product> updateProduct(@RequestBody Product product) throws ProductNotFoundException {
         return ResponseEntity.status(HttpStatus.OK).body(productService.completeUpdate(product));
     }
     @PostMapping
-    public ResponseEntity<Product> createProduct(@RequestBody Product product) throws InstanceNotFoundException {
+    public ResponseEntity<Product> createProduct(@RequestBody Product product) throws ProductNotFoundException {
         return ResponseEntity.status(HttpStatus.CREATED).body(productService.save(product));
     }
     @DeleteMapping
-    public ResponseEntity<Boolean> deleteProduct(@RequestBody Product product) throws InstanceNotFoundException {
+    public ResponseEntity<Boolean> deleteProduct(@RequestBody Product product) throws ProductNotFoundException {
 
 
         try {
             productService.deleteById(product.getId());
             return ResponseEntity.status(HttpStatus.OK).body(true);
-        }catch (InstanceNotFoundException e) {
+        }catch (ProductNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(false);
         }
     }
 
     @PatchMapping
-    public ResponseEntity<Product> patchProduct(@RequestBody Product product) throws InstanceNotFoundException {
+    public ResponseEntity<Product> patchProduct(@RequestBody Product product) throws ProductNotFoundException {
         return ResponseEntity.status(HttpStatus.OK).body(productService.partialUpdate(product));
     }
     //these exception handler acts as filter onlly for this class methods.

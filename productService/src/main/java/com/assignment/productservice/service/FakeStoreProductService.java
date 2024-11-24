@@ -1,6 +1,7 @@
 package com.assignment.productservice.service;
 
 import com.assignment.productservice.dto.FakeStoreProductDto;
+import com.assignment.productservice.exception.ProductNotFoundException;
 import com.assignment.productservice.models.Category;
 import com.assignment.productservice.models.Product;
 import org.springframework.http.HttpMethod;
@@ -37,11 +38,11 @@ public class FakeStoreProductService implements IProductService {
     }
 
     @Override
-    public Product findById(Long id) throws InstanceNotFoundException {
+    public Product findById(Long id) throws ProductNotFoundException {
         System.out.println("caleed method with id ");
         FakeStoreProductDto product = restTemplte.getForObject("https://fakestoreapi.com/products/" + id, FakeStoreProductDto.class);
         if (product == null) {
-           throw new InstanceNotFoundException("No product found for given entity"+id);
+           throw new ProductNotFoundException("No product found for given entity"+id);
         }
         System.out.println("Product: " + product);
         return convertFakeStoreProductDtoToProduct(product);
@@ -54,11 +55,11 @@ public class FakeStoreProductService implements IProductService {
     }
 
     @Override
-    public void deleteById(Long id) throws InstanceNotFoundException {
+    public void deleteById(Long id) throws ProductNotFoundException {
 
         Product product =  findById(id);
         if(id<=0 || product==null)
-            throw new InstanceNotFoundException("No product found for given id");
+            throw new ProductNotFoundException("No product found for given id");
 
         restTemplte.delete("https://fakestoreapi.com/products/" + id, FakeStoreProductDto.class);
 

@@ -1,5 +1,6 @@
 package com.assignment.productservice.service;
 
+import com.assignment.productservice.exception.ProductNotFoundException;
 import com.assignment.productservice.models.Product;
 import com.assignment.productservice.repository.CategoryRepository;
 import com.assignment.productservice.repository.ProductRepository;
@@ -24,8 +25,8 @@ public class SelfProductService implements IProductService {
     }
 
     @Override
-    public Product findById(Long id) throws InstanceNotFoundException {
-        return productRepository.findById(id).orElseThrow(InstanceNotFoundException::new);
+    public Product findById(Long id) throws ProductNotFoundException {
+        return productRepository.findById(id).orElseThrow(()->new ProductNotFoundException("Not found with id "+id));
 
     }
 
@@ -35,7 +36,7 @@ public class SelfProductService implements IProductService {
     }
 
     @Override
-    public void deleteById(Long id) throws InstanceNotFoundException {
+    public void deleteById(Long id) throws ProductNotFoundException {
 
          productRepository.deleteById(id);
 
