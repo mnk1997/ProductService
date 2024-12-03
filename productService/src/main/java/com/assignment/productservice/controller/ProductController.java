@@ -1,5 +1,7 @@
 package com.assignment.productservice.controller;
 
+import com.assignment.productservice.dto.TokenValidateRequestDto;
+import com.assignment.productservice.dto.TokenValidateResponseDto;
 import com.assignment.productservice.exception.ProductNotFoundException;
 import com.assignment.productservice.models.Product;
 import com.assignment.productservice.service.IProductService;
@@ -19,14 +21,24 @@ public class ProductController {
 
 
     private IProductService productService;
-    public ProductController(@Qualifier("SelfProductService")IProductService productService) {
+    private RestTemplate restTemplate;
+    public ProductController(@Qualifier("SelfProductService")IProductService productService,RestTemplate restTemplate) {
         this.productService = productService;
+        this.restTemplate = restTemplate;
     }
 
     @GetMapping
-    @RequestMapping("/{id}")
-    public ResponseEntity<Product> getProductById(@PathVariable("id") Long id) throws ProductNotFoundException {
-       return  ResponseEntity.status(HttpStatus.OK).body( productService.findById(id));
+    @RequestMapping("/{username}/{id}")
+    public ResponseEntity<Product> getProductById(@PathVariable("id") Long id,@PathVariable("username") String userName, @RequestHeader String tokenId) throws ProductNotFoundException {
+
+        try{
+            ResponseEntity<TokenValidateResponseDto> session=restTemplate.postForEntity("http://localhost:8080/user/validateToken",TokenValidateRequestDto.from(tokenId,userName),TokenValidateResponseDto.class );
+            return  ResponseEntity.status(HttpStatus.OK).body( productService.findById(id));
+        }
+        catch(Exception ex){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
     }
 
     @GetMapping
